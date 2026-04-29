@@ -32,9 +32,9 @@ jobs:
             if [ ! -d ".git" ]; then
               echo "Carpeta detectada pero sin .git, limpiando..."
               rm -rf ..?* .[!.]* * 
-              git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com${{ github.repository }}.git .
+              git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git .
             else
-              git pull https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com${{ github.repository }}.git master
+              git pull https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git master
             fi
 
             # 3. Crear el archivo .env
