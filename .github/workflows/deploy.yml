@@ -3,6 +3,9 @@ name: Continuous Deployment
 on:
   push:
     branches: [ master ]  # Se dispara cuando haces push a la rama main
+    
+permissions:
+  contents: read
 
 jobs:
   deploy:
@@ -29,9 +32,11 @@ jobs:
 
             # 2. Clonar si está vacío o actualizar si ya existe
             if [ ! -d ".git" ]; then
-              git clone https://github.com{{ github.repository }}.git .
+              echo "Carpeta detectada pero sin .git, limpiando..."
+              rm -rf ..?* .[!.]* * 
+              git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git .
             else
-              git pull origin master
+              git pull https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git master
             fi
 
             # 3. Crear el archivo .env
