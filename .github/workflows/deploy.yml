@@ -22,7 +22,7 @@ jobs:
             cd /home/${{ secrets.SSH_USER }}/db-deployment  # Ajusta esta ruta a tu carpeta real
             
             # 2. Actualizar el código
-            git pull origin main
+            git pull origin master
             
             # 3. Crear el archivo .env actualizado al vuelo
             echo "POSTGRES_USER=${{ secrets.DB_USER }}" > .env
