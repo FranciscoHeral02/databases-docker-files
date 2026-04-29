@@ -19,7 +19,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             # Definir el nombre del repo dinámicamente
-            REPO_NAME=${{ github.event.repository.name }}
+            REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
             BASE_PATH="/home/${{ secrets.SSH_USER }}/$REPO_NAME"
 
             # 1. Crear carpeta si no existe y entrar
