@@ -18,19 +18,25 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            # 1. Entrar a la carpeta del proyecto
-            cd /home/${{ secrets.SSH_USER }}/db-deployment  # Ajusta esta ruta a tu carpeta real
-            
-            # 2. Actualizar el código
-            git pull origin master
-            
-            # 3. Crear el archivo .env actualizado al vuelo
+            # Definir el nombre del repo dinámicamente
+            REPO_NAME=${{ github.event.repository.name }}
+            BASE_PATH="/home/${{ secrets.SSH_USER }}/$REPO_NAME"
+
+            # 1. Crear carpeta si no existe y entrar
+            mkdir -p $BASE_PATH && cd $BASE_PATH
+
+            # 2. Clonar si está vacío o actualizar si ya existe
+            if [ ! -d ".git" ]; then
+              git clone https://github.com{{ github.repository }}.git .
+            else
+              git pull origin master
+            fi
+
+            # 3. Crear el archivo .env
             echo "POSTGRES_USER=${{ secrets.DB_USER }}" > .env
-            echo "POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+            echo "POSTGRES_PASSWORD=${{ secrets.DB_PASS }}" >> .env
             echo "POSTGRES_DB=${{ secrets.DB_NAME }}" >> .env
-            
-            # 4. Levantar los servicios
+
+            # 4. Levantar servicios (usando el usuario con permisos de docker)
             docker compose up -d --build
-            
-            # 5. Limpieza opcional de imágenes huérfanas
             docker image prune -f
